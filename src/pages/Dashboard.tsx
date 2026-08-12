@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { supabase, type Project, type Task, type Agent } from '@/lib/supabase';
 import { useAuth } from '@/lib/auth';
 import { TopBar } from '@/components/Sidebar';
-import { cn, isOverdue, formatRelative } from '@/lib/utils';
+import { cn, isOverdue } from '@/lib/utils';
 import {
   Plus,
   FolderKanban,
@@ -48,7 +48,6 @@ export function Dashboard({ onNavigateProject, onNewProject, onNavigateAgents, o
   const completedTasks = tasks.filter((t) => t.completed).length;
   const inProgressTasks = tasks.filter((t) => t.status === 'in-progress').length;
   const overdueTasks = tasks.filter((t) => isOverdue(t.due_date) && !t.completed).length;
-  const activeAgents = agents.filter((a) => a.status === 'active' || a.status === 'working').length;
   const completionRate = tasks.length > 0 ? Math.round((completedTasks / tasks.length) * 100) : 0;
 
   const stats = [
@@ -72,7 +71,6 @@ export function Dashboard({ onNavigateProject, onNewProject, onNavigateAgents, o
       />
 
       <div className="flex-1 overflow-y-auto scrollbar-thin mesh-bg p-6">
-        {/* Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
           {stats.map((stat) => (
             <div key={stat.label} className="card p-5 animate-slide-up">
@@ -88,7 +86,6 @@ export function Dashboard({ onNavigateProject, onNewProject, onNavigateAgents, o
         </div>
 
         <div className="grid lg:grid-cols-3 gap-6">
-          {/* Projects list */}
           <div className="lg:col-span-2 space-y-6">
             <div className="card p-5">
               <div className="flex items-center justify-between mb-4">
@@ -155,9 +152,7 @@ export function Dashboard({ onNavigateProject, onNewProject, onNavigateAgents, o
             </div>
           </div>
 
-          {/* Side panel */}
           <div className="space-y-6">
-            {/* Completion rate */}
             <div className="card p-5">
               <div className="flex items-center gap-2 mb-4">
                 <TrendingUp className="w-4 h-4 text-brand-600" />
@@ -184,7 +179,6 @@ export function Dashboard({ onNavigateProject, onNewProject, onNavigateAgents, o
               </p>
             </div>
 
-            {/* Agents */}
             <div className="card p-5">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
@@ -227,7 +221,6 @@ export function Dashboard({ onNavigateProject, onNewProject, onNavigateAgents, o
               )}
             </div>
 
-            {/* Integrations */}
             <div className="card p-5">
               <div className="flex items-center gap-2 mb-4">
                 <Zap className="w-4 h-4 text-brand-600" />
