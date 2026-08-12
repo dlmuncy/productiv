@@ -5,7 +5,6 @@ import { cn } from '@/lib/utils';
 import type { Project } from '@/lib/supabase';
 import {
   LayoutDashboard,
-  FolderKanban,
   Bot,
   Plug,
   Network,
