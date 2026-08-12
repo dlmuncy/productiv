@@ -15,7 +15,7 @@ async function cycle(){
   for(const msg of inbox.messages||[]){
     if(msg.type==='checkin_required'||msg.type==='checkout_required'){
       const result=await runHandler({kind:msg.type,message:msg});
-      if(result?.summary){const typ=msg.type==='checkin_required'?'checkin':'checkout';await request(`/api/agent/reports/${typ}`,{method:'POST',body:JSON.stringify({summary:result.summary,evidence:result.evidence||[]})});await request(`/api/agent/messages/${msg.id}/read`,{method:'POST',body:'{}'});}
+      if(result?.summary){const typ=msg.type==='checkin_required'?'checkin':'checkout';await request(`/api/agent/reports/${typ}`,{method:'POST',body:JSON.stringify({summary:result.summary,evidence:result.evidence||[],report_date:String(msg.body||'').slice(0,10)})});await request(`/api/agent/messages/${msg.id}/read`,{method:'POST',body:'{}'});}
     }
   }
   for(const task of inbox.tasks||[]){
