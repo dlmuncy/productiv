@@ -1,0 +1,17 @@
+services:
+  productiv:
+    build: .
+    container_name: productiv
+    restart: unless-stopped
+    ports:
+      - "8788:8788"
+    env_file:
+      - .env.runtime
+    volumes:
+      - productiv-data:/app/data
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+volumes:
+  productiv-data:

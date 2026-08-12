@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import type { Task, Section, Agent } from '@/lib/supabase';
 import { cn, isOverdue, formatRelative } from '@/lib/utils';
-import { CheckCircle2, Circle, Plus, Bot, Calendar, Trash2, Flag } from 'lucide-react';
+import { CheckCircle2, Circle, Plus, Bot, Calendar, Trash2 } from 'lucide-react';
 
 type BoardViewProps = {
   tasks: Task[];
@@ -140,7 +140,6 @@ export function BoardView({
                   );
                 })}
 
-                {/* Add task */}
                 {addingTo === col.id ? (
                   <div className="bg-white rounded-lg p-2 border border-brand-300">
                     <textarea

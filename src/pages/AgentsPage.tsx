@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { supabase, type Agent } from '@/lib/supabase';
 import { TopBar } from '@/components/Sidebar';
 import { cn } from '@/lib/utils';
-import { Bot, Plus, X, Cpu, Zap, Trash2, Sparkles, Loader2 } from 'lucide-react';
+import { Bot, Plus, X, Cpu, Trash2, Sparkles, Loader2 } from 'lucide-react';
 
 export function AgentsPage() {
   const [agents, setAgents] = useState<Agent[]>([]);
