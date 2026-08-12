@@ -1,9 +1,9 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState } from 'react';
 import { supabase, type Agent, type ProjectAgent, type AgentDelegation, type Task } from '@/lib/supabase';
 import { cn } from '@/lib/utils';
 import {
-  Bot, Plus, X, Send, ArrowRight, Clock, CheckCircle2, Loader2,
-  Sparkles, Zap, Network, Cpu, Trash2, ChevronDown,
+  Bot, Plus, X, ArrowRight, Clock,
+  Sparkles, Zap, Cpu, Trash2,
 } from 'lucide-react';
 
 type AgentPanelProps = {
@@ -23,9 +23,7 @@ export function AgentPanel({
   onToggleAgentManaged, agentManaged, leadAgentId,
 }: AgentPanelProps) {
   const [showCreate, setShowCreate] = useState(false);
-  const [showDelegate, setShowDelegate] = useState(false);
   const [newAgent, setNewAgent] = useState({ name: '', role: 'contributor', model: 'gpt-4o', color: '#3563ff', system_prompt: '' });
-  const [delegating, setDelegating] = useState(false);
 
   const projectAgentIds = new Set(projectAgents.map((pa) => pa.agent_id));
   const linkedAgents = agents.filter((a) => projectAgentIds.has(a.id));
@@ -76,7 +74,6 @@ export function AgentPanel({
       </div>
 
       <div className="flex-1 overflow-y-auto scrollbar-thin p-4 space-y-4">
-        {/* Agent-managed toggle */}
         <div className="rounded-xl border border-slate-200 p-4 bg-gradient-to-br from-brand-50 to-accent-50/30">
           <div className="flex items-center gap-2 mb-2">
             <Sparkles className="w-4 h-4 text-brand-600" />
@@ -105,7 +102,6 @@ export function AgentPanel({
           )}
         </div>
 
-        {/* Linked agents */}
         <div>
           <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Project Agents</h3>
           {linkedAgents.length === 0 && (
@@ -158,7 +154,6 @@ export function AgentPanel({
           </div>
         </div>
 
-        {/* Available agents */}
         {availableAgents.length > 0 && (
           <div>
             <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Available Agents</h3>
@@ -183,7 +178,6 @@ export function AgentPanel({
           </div>
         )}
 
-        {/* Delegations */}
         {delegations.length > 0 && (
           <div>
             <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Recent Delegations</h3>
@@ -219,7 +213,6 @@ export function AgentPanel({
         )}
       </div>
 
-      {/* Create agent modal */}
       {showCreate && (
         <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50 animate-fade-in" onClick={() => setShowCreate(false)}>
           <div className="card p-6 w-96 animate-scale-in" onClick={(e) => e.stopPropagation()}>
