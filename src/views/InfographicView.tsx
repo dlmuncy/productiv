@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import type { Task, Agent } from '@/lib/supabase';
-import { cn, isOverdue } from '@/lib/utils';
-import { CheckCircle2, Circle, Clock, AlertCircle, Bot, TrendingUp, Zap, Target } from 'lucide-react';
+import { isOverdue } from '@/lib/utils';
+import { CheckCircle2, Circle, Clock, AlertCircle, Bot, TrendingUp, Target } from 'lucide-react';
 
 type InfographicViewProps = {
   tasks: Task[];
