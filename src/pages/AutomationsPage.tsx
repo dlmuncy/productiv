@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { TopBar } from '@/components/Sidebar';
 import { orchestratorFetch, type RuntimeAgent } from '@/lib/orchestrator';
-import { Activity, Clock3, Loader2, Pause, Play, Plus, RefreshCw, Workflow, XCircle } from 'lucide-react';
+import { Activity, Loader2, Pause, Play, Plus, RefreshCw, Workflow, XCircle } from 'lucide-react';
 
 type Rule={id:string;name:string;enabled:number;trigger_type:'interval_minutes'|'daily';trigger_config:Record<string,number>;action_type:'create_task'|'send_message';action_config:Record<string,unknown>;last_run_at:string|null;last_error:string|null;run_count:number;created_at:string};
 export function AutomationsPage(){
