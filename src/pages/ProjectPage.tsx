@@ -13,7 +13,7 @@ import { ChatPanel } from '@/components/ChatPanel';
 import { cn } from '@/lib/utils';
 import {
   List, Columns3, GanttChart, BarChart3, FileBarChart, Users, Network,
-  Bot, MessageSquare, Plus, X, Calendar, Flag, Settings as SettingsIcon,
+  Bot, MessageSquare, Plus, X,
 } from 'lucide-react';
 
 type ViewType = 'list' | 'board' | 'timeline' | 'infographic' | 'executive' | 'workload' | 'mindmap';
@@ -33,7 +33,7 @@ type ProjectPageProps = {
   onBack: () => void;
 };
 
-export function ProjectPage({ project, onBack }: ProjectPageProps) {
+export function ProjectPage({ project }: ProjectPageProps) {
   const [view, setView] = useState<ViewType>('list');
   const [tasks, setTasks] = useState<Task[]>([]);
   const [sections, setSections] = useState<Section[]>([]);
@@ -62,7 +62,6 @@ export function ProjectPage({ project, onBack }: ProjectPageProps) {
   }, [project.id]);
 
   useEffect(() => { loadData(); }, [loadData]);
-
   useEffect(() => { setProjectState(project); }, [project]);
 
   const toggleComplete = async (task: Task) => {
@@ -146,7 +145,6 @@ export function ProjectPage({ project, onBack }: ProjectPageProps) {
         }
       />
 
-      {/* View switcher */}
       <div className="flex items-center gap-1 px-4 py-2 border-b border-slate-200/80 bg-white overflow-x-auto scrollbar-thin">
         {VIEWS.map((v) => (
           <button
@@ -166,59 +164,25 @@ export function ProjectPage({ project, onBack }: ProjectPageProps) {
       <div className="flex-1 flex overflow-hidden">
         <div className="flex-1 flex flex-col overflow-hidden">
           {view === 'list' && (
-            <ListView
-              tasks={tasks} sections={sections} agents={linkedAgents}
-              onToggleComplete={toggleComplete} onUpdateTask={updateTask}
-              onAddTask={addTask} onAddSection={addSection} onDeleteTask={deleteTask}
-            />
+            <ListView tasks={tasks} sections={sections} agents={linkedAgents} onToggleComplete={toggleComplete} onUpdateTask={updateTask} onAddTask={addTask} onAddSection={addSection} onDeleteTask={deleteTask} />
           )}
           {view === 'board' && (
-            <BoardView
-              tasks={tasks} sections={sections} agents={linkedAgents}
-              onToggleComplete={toggleComplete} onUpdateTask={updateTask}
-              onAddTask={addTask} onMoveTask={moveTask} onDeleteTask={deleteTask}
-            />
+            <BoardView tasks={tasks} sections={sections} agents={linkedAgents} onToggleComplete={toggleComplete} onUpdateTask={updateTask} onAddTask={addTask} onMoveTask={moveTask} onDeleteTask={deleteTask} />
           )}
-          {view === 'timeline' && (
-            <TimelineView tasks={tasks} projectColor={projectState.color} onToggleComplete={toggleComplete} />
-          )}
-          {view === 'infographic' && (
-            <InfographicView tasks={tasks} agents={linkedAgents} projectColor={projectState.color} projectName={projectState.name} />
-          )}
-          {view === 'executive' && (
-            <ExecutiveView tasks={tasks} agents={linkedAgents} project={projectState} />
-          )}
-          {view === 'workload' && (
-            <WorkloadView tasks={tasks} agents={linkedAgents} onToggleComplete={toggleComplete} />
-          )}
-          {view === 'mindmap' && (
-            <MindMapView tasks={tasks} agents={linkedAgents} projectColor={projectState.color} projectName={projectState.name} onToggleComplete={toggleComplete} />
-          )}
+          {view === 'timeline' && <TimelineView tasks={tasks} projectColor={projectState.color} onToggleComplete={toggleComplete} />}
+          {view === 'infographic' && <InfographicView tasks={tasks} agents={linkedAgents} projectColor={projectState.color} projectName={projectState.name} />}
+          {view === 'executive' && <ExecutiveView tasks={tasks} agents={linkedAgents} project={projectState} />}
+          {view === 'workload' && <WorkloadView tasks={tasks} agents={linkedAgents} onToggleComplete={toggleComplete} />}
+          {view === 'mindmap' && <MindMapView tasks={tasks} agents={linkedAgents} projectColor={projectState.color} projectName={projectState.name} onToggleComplete={toggleComplete} />}
         </div>
 
         {showAgentPanel && (
-          <AgentPanel
-            projectId={project.id}
-            agents={agents}
-            projectAgents={projectAgents}
-            tasks={tasks}
-            delegations={delegations}
-            onAgentsChanged={loadData}
-            onToggleAgentManaged={toggleAgentManaged}
-            agentManaged={projectState.agent_managed}
-            leadAgentId={projectState.lead_agent_id}
-          />
+          <AgentPanel projectId={project.id} agents={agents} projectAgents={projectAgents} tasks={tasks} delegations={delegations} onAgentsChanged={loadData} onToggleAgentManaged={toggleAgentManaged} agentManaged={projectState.agent_managed} leadAgentId={projectState.lead_agent_id} />
         )}
 
-        <ChatPanel
-          projectId={project.id}
-          agents={linkedAgents}
-          isOpen={showChat}
-          onClose={() => setShowChat(false)}
-        />
+        <ChatPanel projectId={project.id} agents={linkedAgents} isOpen={showChat} onClose={() => setShowChat(false)} />
       </div>
 
-      {/* New task modal */}
       {showNewTask && (
         <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50 animate-fade-in" onClick={() => setShowNewTask(false)}>
           <div className="card p-6 w-96 animate-scale-in" onClick={(e) => e.stopPropagation()}>
@@ -250,9 +214,7 @@ export function ProjectPage({ project, onBack }: ProjectPageProps) {
                 <label className="block text-xs font-medium text-slate-600 mb-1">Assign to Agent</label>
                 <select value={newTask.assignee_agent_id} onChange={(e) => setNewTask({ ...newTask, assignee_agent_id: e.target.value })} className="input">
                   <option value="">Unassigned</option>
-                  {linkedAgents.map((a) => (
-                    <option key={a.id} value={a.id}>{a.name}</option>
-                  ))}
+                  {linkedAgents.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
                 </select>
               </div>
               <button onClick={createQuickTask} disabled={!newTask.title.trim()} className="btn-primary w-full">
