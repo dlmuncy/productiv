@@ -7,6 +7,8 @@ import { Dashboard } from '@/pages/Dashboard';
 import { ProjectPage } from '@/pages/ProjectPage';
 import { AgentsPage } from '@/pages/AgentsPage';
 import { ConnectionsPage } from '@/pages/ConnectionsPage';
+import { OrchestrationPage } from '@/pages/OrchestrationPage';
+import { AutomationsPage } from '@/pages/AutomationsPage';
 import { Sidebar, type View } from '@/components/Sidebar';
 import { NewProjectModal } from '@/components/NewProjectModal';
 import { Loader2 } from 'lucide-react';
@@ -90,6 +92,8 @@ function AppContent() {
 
       {view === 'agents' && <AgentsPage />}
       {view === 'connections' && <ConnectionsPage />}
+      {view === 'orchestration' && <OrchestrationPage />}
+      {view === 'automations' && <AutomationsPage />}
       {view === 'settings' && (
         <div className="flex-1 flex items-center justify-center text-slate-500">
           Settings coming soon

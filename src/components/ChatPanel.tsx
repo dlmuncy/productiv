@@ -57,33 +57,8 @@ export function ChatPanel({ projectId, agents, isOpen, onClose }: ChatPanelProps
     setMessages(data ?? []);
     setSending(false);
 
-    // Simulate agent response if any agents are linked
-    if (agents.length > 0) {
-      setTimeout(async () => {
-        const agent = agents[Math.floor(Math.random() * agents.length)];
-        const responses = [
-          `I've reviewed the update. I'll start working on this right away.`,
-          `Got it. I'll coordinate with the team and track progress in the task list.`,
-          `Understood. I've noted this and will factor it into my current workload.`,
-          `I can handle this. Let me break it down into subtasks and get started.`,
-          `Acknowledged. I'll monitor the situation and report back when there's progress.`,
-        ];
-        const response = responses[Math.floor(Math.random() * responses.length)];
-        await supabase.from('messages').insert({
-          project_id: projectId,
-          author_type: 'agent',
-          author_agent_id: agent.id,
-          content: response,
-          message_type: 'chat',
-        });
-        const { data: updated } = await supabase
-          .from('messages')
-          .select('*')
-          .eq('project_id', projectId)
-          .order('created_at', { ascending: true });
-        setMessages(updated ?? []);
-      }, 1200 + Math.random() * 1500);
-    }
+    // Real agent replies are persisted only when an authenticated runtime posts them.
+
   };
 
   if (!isOpen) return null;
@@ -167,7 +142,7 @@ export function ChatPanel({ projectId, agents, isOpen, onClose }: ChatPanelProps
         {agents.length > 0 && (
           <p className="text-[10px] text-slate-400 mt-1.5 flex items-center gap-1">
             <Sparkles className="w-2.5 h-2.5" />
-            {agents.length} agent{agents.length !== 1 ? 's' : ''} will respond to messages
+            {agents.length} linked agent profile{agents.length !== 1 ? 's' : ''}; only verified runtime replies are shown
           </p>
         )}
       </div>

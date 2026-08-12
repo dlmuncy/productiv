@@ -84,19 +84,6 @@ export type Message = {
   created_at: string;
 };
 
-export type BuilderConnection = {
-  id: string;
-  user_id: string;
-  app_type: string;
-  app_name: string;
-  encrypted_token: string;
-  metadata: Record<string, unknown>;
-  connected: boolean;
-  last_synced_at: string | null;
-  created_at: string;
-  updated_at: string;
-};
-
 export type AgentDelegation = {
   id: string;
   project_id: string;

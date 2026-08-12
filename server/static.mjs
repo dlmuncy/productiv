@@ -1,0 +1,5 @@
+import fs from 'node:fs';
+import fsp from 'node:fs/promises';
+import path from 'node:path';
+
+export async function serveStatic(req,res,distDir){if(!distDir||!fs.existsSync(distDir))return false;const u=new URL(req.url,'http://localhost');if(req.method!=='GET'||u.pathname.startsWith('/api/')||u.pathname==='/mcp'||u.pathname==='/healthz')return false;let rel=u.pathname==='/'?'index.html':decodeURIComponent(u.pathname.slice(1)),file=path.resolve(distDir,rel);if(!file.startsWith(path.resolve(distDir)))return false;try{const st=await fsp.stat(file);if(st.isDirectory())file=path.join(file,'index.html')}catch{file=path.join(distDir,'index.html')}try{const data=await fsp.readFile(file),ext=path.extname(file),types={'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.svg':'image/svg+xml','.png':'image/png','.jpg':'image/jpeg','.ico':'image/x-icon'};res.writeHead(200,{'content-type':types[ext]||'application/octet-stream','x-content-type-options':'nosniff'});res.end(data);return true}catch{return false}}
