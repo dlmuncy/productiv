@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { supabase, type Message, type Agent } from '@/lib/supabase';
-import { cn, initials } from '@/lib/utils';
+import { cn } from '@/lib/utils';
 import { Send, Bot, User, MessageSquare, X, Sparkles } from 'lucide-react';
 
 type ChatPanelProps = {
@@ -58,7 +58,6 @@ export function ChatPanel({ projectId, agents, isOpen, onClose }: ChatPanelProps
     setSending(false);
 
     // Real agent replies are persisted only when an authenticated runtime posts them.
-
   };
 
   if (!isOpen) return null;
