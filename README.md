@@ -74,12 +74,12 @@ After an administrator creates a one-time invite, a runtime registers once and r
 
 ## Deployment
 
-Requirements: Docker with Compose and a Supabase project already used by the Productiv UI. Node 22 is used because the orchestration service relies on the built-in `node:sqlite` module.
+Requirements: Docker with Compose and the existing Supabase project used by the Productiv UI. Node 22 is used because the orchestration service relies on the built-in `node:sqlite` module.
 
-1. Copy `.env.example` to `.env.runtime` on the host and populate only the required runtime values. Never commit `.env.runtime`.
-2. Run `docker compose up -d --build`.
+1. Copy `.env.example` to `.env.runtime` on the host and populate the required values. `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` are required both while building the browser bundle and while the server is running. Never commit `.env.runtime`.
+2. Run `bash scripts/deploy-hostinger-vps.sh`. The script validates Compose, builds with `.env.runtime`, starts the service, waits for `http://127.0.0.1:8788/healthz`, and fails with container logs if health never becomes good.
 
-The same container serves the built Productiv UI and orchestration API on port `8788`. Persistent orchestration state lives in the `productiv-data` volume.
+The equivalent manual command is `docker compose --env-file .env.runtime up -d --build`. The same container serves the built Productiv UI and orchestration API on port `8788`. Persistent orchestration state lives in the `productiv-data` volume.
 
 ## QA/QC gates
 
