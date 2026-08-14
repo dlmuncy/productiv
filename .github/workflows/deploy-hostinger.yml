@@ -1,0 +1,103 @@
+name: Deploy Productiv to Hostinger VPS
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: Git ref to deploy
+        required: false
+        default: main
+  push:
+    branches:
+      - main
+    paths:
+      - 'server/**'
+      - 'src/**'
+      - 'scripts/**'
+      - 'Dockerfile'
+      - 'docker-compose.yml'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/deploy-hostinger.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: productiv-hostinger-production
+  cancel-in-progress: false
+
+env:
+  DEPLOY_PATH: /opt/productiv
+
+jobs:
+  qa-and-deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout exact revision
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.inputs.ref || github.sha }}
+
+      - name: Set up Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Install and run Productiv QA
+        run: |
+          npm ci
+          npm run qa
+
+      - name: Require Hostinger deployment credentials
+        env:
+          HOST: ${{ secrets.PRODUCTIV_VPS_HOST }}
+          USER: ${{ secrets.PRODUCTIV_VPS_USER }}
+          KEY: ${{ secrets.PRODUCTIV_VPS_SSH_KEY }}
+        run: |
+          set -euo pipefail
+          missing=0
+          for item in HOST USER KEY; do
+            if [[ -z "${!item:-}" ]]; then echo "Missing required GitHub secret for $item"; missing=1; fi
+          done
+          [[ "$missing" -eq 0 ]]
+
+      - name: Configure SSH
+        env:
+          KEY: ${{ secrets.PRODUCTIV_VPS_SSH_KEY }}
+          HOST: ${{ secrets.PRODUCTIV_VPS_HOST }}
+        run: |
+          set -euo pipefail
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$KEY" > ~/.ssh/productiv_deploy
+          chmod 600 ~/.ssh/productiv_deploy
+          ssh-keyscan -H "$HOST" >> ~/.ssh/known_hosts
+
+      - name: Upload exact tested revision
+        env:
+          HOST: ${{ secrets.PRODUCTIV_VPS_HOST }}
+          USER: ${{ secrets.PRODUCTIV_VPS_USER }}
+        run: |
+          set -euo pipefail
+          tar --exclude=.git --exclude=node_modules --exclude=.env.runtime -czf /tmp/productiv-release.tgz .
+          ssh -i ~/.ssh/productiv_deploy "$USER@$HOST" "mkdir -p '$DEPLOY_PATH'"
+          scp -i ~/.ssh/productiv_deploy /tmp/productiv-release.tgz "$USER@$HOST:/tmp/productiv-release.tgz"
+          ssh -i ~/.ssh/productiv_deploy "$USER@$HOST" "set -e; cd '$DEPLOY_PATH'; find . -mindepth 1 -maxdepth 1 ! -name .env.runtime -exec rm -rf {} +; tar -xzf /tmp/productiv-release.tgz -C '$DEPLOY_PATH'; rm -f /tmp/productiv-release.tgz; printf '%s\n' '${{ github.sha }}' > DEPLOYED_GIT_SHA"
+
+      - name: Deploy using repository verifier
+        env:
+          HOST: ${{ secrets.PRODUCTIV_VPS_HOST }}
+          USER: ${{ secrets.PRODUCTIV_VPS_USER }}
+        run: |
+          set -euo pipefail
+          ssh -i ~/.ssh/productiv_deploy "$USER@$HOST" "set -e; cd '$DEPLOY_PATH'; chmod +x scripts/deploy-hostinger-vps.sh; ./scripts/deploy-hostinger-vps.sh"
+
+      - name: Capture runtime evidence
+        env:
+          HOST: ${{ secrets.PRODUCTIV_VPS_HOST }}
+          USER: ${{ secrets.PRODUCTIV_VPS_USER }}
+        run: |
+          set -euo pipefail
+          ssh -i ~/.ssh/productiv_deploy "$USER@$HOST" "set -e; echo 'SHA:'; cat '$DEPLOY_PATH/DEPLOYED_GIT_SHA'; echo; for path in healthz readyz status; do echo \"--- /\$path\"; curl --fail --silent --show-error \"http://127.0.0.1:8788/\$path\"; echo; done"
