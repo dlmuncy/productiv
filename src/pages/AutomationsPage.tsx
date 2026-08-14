@@ -9,7 +9,6 @@ import {
   MessageSquare,
   Pause,
   Play,
-  Plus,
   RefreshCw,
   Route,
   Save,
