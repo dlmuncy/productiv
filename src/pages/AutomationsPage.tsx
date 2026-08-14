@@ -117,7 +117,7 @@ function VisualBuilder({
             <h3 className="font-bold text-slate-900">Visual Autom8-it builder</h3>
           </div>
           <p className="mt-1 max-w-2xl text-xs text-slate-500">
-            This canvas is intentionally limited to Productiv actions that execute through the real orchestration API. No mock connectors or simulated nodes are shown.
+            This canvas is intentionally limited to Productiv actions that execute through the real orchestration API. No placeholder connectors or browser-fabricated nodes are shown.
           </p>
         </div>
         <div className="rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-[11px] font-semibold text-emerald-700">
@@ -357,7 +357,7 @@ export function AutomationsPage() {
             <div className="mb-3 flex items-center justify-between">
               <div>
                 <div className="flex items-center gap-2"><Workflow className="h-5 w-5 text-brand-600" /><h3 className="font-bold text-slate-900">Saved executable workflows</h3></div>
-                <p className="mt-1 text-xs text-slate-500">Run counts and errors come from Productiv's scheduler evidence, not browser simulation.</p>
+                <p className="mt-1 text-xs text-slate-500">Run counts and errors come from Productiv's scheduler evidence, not browser-generated activity.</p>
               </div>
             </div>
 
