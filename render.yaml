@@ -1,0 +1,31 @@
+services:
+  - type: web
+    name: productiv
+    runtime: docker
+    plan: free
+    region: virginia
+    branch: main
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /healthz
+    autoDeployTrigger: checksPass
+    renderSubdomainPolicy: enabled
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PRODUCTIV_DB_PATH
+        value: /app/data/productiv.db
+      - key: PRODUCTIV_TIMEZONE
+        value: America/New_York
+      - key: PRODUCTIV_CHECKIN_HOUR
+        value: "8"
+      - key: PRODUCTIV_CHECKOUT_HOUR
+        value: "19"
+      - key: VITE_SUPABASE_URL
+        sync: false
+      - key: VITE_SUPABASE_ANON_KEY
+        sync: false
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_ANON_KEY
+        sync: false
